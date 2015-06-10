@@ -1,5 +1,5 @@
 /*
- Backporting "visuallyselected" for Firefox 40 and older versions
+ Backporting "visuallyselected" for Firefox 31-40
 
  See also:
    http://www.hackermusings.com/2015/06/electrolysis-a-tale-of-tab-switching-and-themes/
