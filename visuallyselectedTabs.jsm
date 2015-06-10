@@ -37,7 +37,7 @@ function visuallyselectedTabs(aTabBrowser) {
   var tabsContainer = aTabBrowser.tabContainer;
   tabsContainer.addEventListener('TabSelect', onTabSelect, false);
 
-  var document = aTabBrowser.ownerDocuent;
+  var document = aTabBrowser.ownerDocument;
   document.addEventListener('unload', function onUnload(aEvent) {
     document.removeEventListener('unload', onUnload, false);
     tabsContainer.removeEventListener('TabSelect', onTabSelect, false);
