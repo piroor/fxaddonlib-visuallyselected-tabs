@@ -17,6 +17,26 @@ var EXPORTED_SYMBOLS = ['visuallyselectedTabs'];
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 
+function setVisuallySelected(aNode, aSelected) {
+  if (!aNode || typeof aNode.setAttribute != 'function')
+    return;
+
+  if (aSelected)
+    aNode.setAttribute('visuallyselected', true);
+  else
+    aNode.removeAttribute('visuallyselected');
+
+  Array.forEach(aNode.childNodes, function(aChild) {
+    setVisuallySelected(aChild, aSelected);
+  });
+
+  var anonymousChildren = aNode.ownerDocument.getAnonymousNodes(aNode);
+  if (anonymousChildren && anonymousChildren.length > 0)
+    Array.forEach(anonymousChildren, function(aAnonymousChild) {
+      setVisuallySelected(aAnonymousChild, aSelected);
+    });
+}
+
 function visuallyselectedTabs(aTabBrowser) {
   if (!aTabBrowser ||
       aTabBrowser.localName != 'tabbrowser' ||
@@ -26,18 +46,18 @@ function visuallyselectedTabs(aTabBrowser) {
 
   aTabBrowser.__visuallyselectedTabsInstalled = true;
 
+  var document = aTabBrowser.ownerDocument;
+
   function onTabSelect(aEvent) {
     var prevTab = aEvent.detail && aEvent.detail.previousTab;
     if (prevTab)
-      prevTab.removeAttribute('visuallyselected');
+      setVisuallySelected(prevTab, false);
 
-    aEvent.originalTarget.setAttribute('visuallyselected', true);
+    setVisuallySelected(aEvent.originalTarget, true);
   }
 
   var tabsContainer = aTabBrowser.tabContainer;
   tabsContainer.addEventListener('TabSelect', onTabSelect, false);
-
-  var document = aTabBrowser.ownerDocument;
   document.addEventListener('unload', function onUnload(aEvent) {
     document.removeEventListener('unload', onUnload, false);
     tabsContainer.removeEventListener('TabSelect', onTabSelect, false);
