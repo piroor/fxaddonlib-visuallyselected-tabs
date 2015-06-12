@@ -58,6 +58,7 @@ function visuallyselectedTabs(aTabBrowser) {
 
   var tabsContainer = aTabBrowser.tabContainer;
   tabsContainer.addEventListener('TabSelect', onTabSelect, false);
+  setVisuallySelected(aTabBrowser.selectedTab, true);
   document.addEventListener('unload', function onUnload(aEvent) {
     document.removeEventListener('unload', onUnload, false);
     tabsContainer.removeEventListener('TabSelect', onTabSelect, false);
